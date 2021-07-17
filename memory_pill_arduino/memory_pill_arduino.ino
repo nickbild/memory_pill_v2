@@ -5,8 +5,8 @@ const int LID = 4;
 
 WiFiClient client;
 
-const char* host = "aws.amazon.com";
-const char* url = "/record_open?key=";
+const char* host = "192.168.1.113";
+const char* url = "/record_open?";
 
 String state = "closed";
 
@@ -38,19 +38,19 @@ void loop() {
     state = "open";
 
     Serial.println("Lid open.");
-//    // Send signal to remote server.
-//    if (!client.connect(host, 80)) {
-//      Serial.println("Connection failed.");
-//      return;
-//    }
-//
-//    client.print(String("GET ") + url + BOTTLE_ID + " HTTP/1.1\r\n" +
-//      "Host: " + host + "\r\n" +
-//      "Connection: close\r\n\r\n");
-//
-//     while(client.available()) {}
-//
-//     client.stop();
+    // Send signal to remote server.
+    if (!client.connect(host, 5000)) {
+      Serial.println("Connection failed.");
+      return;
+    }
+
+    client.print(String("GET ") + url + "patient_id=" + PATIENT_ID + "&medication_id=" + MEDICATION_ID + " HTTP/1.1\r\n" +
+      "Host: " + host + "\r\n" +
+      "Connection: close\r\n\r\n");
+
+     while(client.available()) {}
+
+     client.stop();
   }
   // Lid is in place, so track that state.
   else if (digitalRead(LID) == LOW) {
