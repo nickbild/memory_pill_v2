@@ -11,20 +11,13 @@ CREATE TABLE medication_administrations (
 CREATE TABLE medication_schedule (
     patient_id TEXT,
     medication_id TEXT,
-    `time` TEXT,
-    m TEXT,
-    t TEXT,
-    w TEXT,
-    r TEXT,
-    f TEXT,
-    s TEXT,
-    u TEXT
+    `time` TEXT
 );
 
-INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '5d91f2938cf68888e290deb643b77251', '08:00', '1', '1', '1', '1', '1', '1', '1');
-INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '90a450310cd0b6074c3a1885cf8e421c', '17:00', '1', '1', '1', '1', '1', '1', '1');
-INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '08:30', '1', '1', '1', '1', '1', '0', '0');
-INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '18:30', '1', '1', '1', '1', '1', '0', '0');
+INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '5d91f2938cf68888e290deb643b77251', '08:00');
+INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '90a450310cd0b6074c3a1885cf8e421c', '17:00');
+INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '08:30');
+INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '18:30');
 
 CREATE TABLE medication_lookup (
     medication_id TEXT,
@@ -41,6 +34,8 @@ CREATE TABLE patients (
     age TEXT,
     gender TEXT
 );
+
+ALTER TABLE patients ADD img TEXT;
 
 INSERT INTO patients VALUES ('332808b0749fbbd33c631d080d52549d', 'Jane Doe', '72', 'F');
 INSERT INTO patients VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', 'Greg Johnson', '55', 'M');
