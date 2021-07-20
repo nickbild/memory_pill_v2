@@ -4,11 +4,22 @@ import sqlite3
 from contextlib import closing
 
 
+app = Flask(__name__)
 now = datetime.now()
+# Set current date in calendar.
+startDate = "initialDate: '{}',".format(now.strftime("%Y-%m-%d"))
 
 
 def populate_calendar(patient_id):
-    html_events = "events: ["
+    html_events = ""
+    html_events += populate_calendar_future_days(patient_id)
+    html_events += populate_calendar_past_days(patient_id)
+
+    return html_events
+
+
+def populate_calendar_future_days(patient_id):
+    html_events = ""
 
     with closing(sqlite3.connect("../memory_pill.db")) as connection:
         connection.row_factory = sqlite3.Row
@@ -19,50 +30,57 @@ def populate_calendar(patient_id):
             for s in med_schedule:
                 cursor.execute("SELECT medication_name FROM medication_lookup WHERE medication_id = '{0}'".format(s['medication_id']))
                 m = format_sqlite_results(cursor, ['medication_name'])
-                print(m[0]['medication_name'])
-                print(s['time'])
 
-    html_events += "]});"
+                for day in range(now.day+1, 32):
+                    # Text label.
+                    med_date = "{0}-{1:02d}-{2:02d}T{3}".format(now.year, now.month, day, s['time'])
+                    html_events += """
+                    {{
+                        id: 'a{1}',
+                        title: '{0}',
+                        start: '{1}',
+                        color: '#b8b8b8'
+                    }},""".format(m[0]['medication_name'], med_date)
+
+                    # Background color.
+                    med_date_no_time = "{0}-{1:02d}-{2:02d}".format(now.year, now.month, day)
+                    html_events += """
+                    {{
+                        overlap: false,
+                        display: 'background',
+                        color: '#e6e6e6',
+                        start: '{0}',
+                        end: '{0}'
+                    }},""".format(med_date_no_time)
 
     return html_events
 
 
-# def med_not_taken_warnings(dates_meds_taken):
-#     global html_events
-#     for i in range(1, now.day+1):
-#         check_date = "{0}-{1}-{2:02d}".format(now.year, now.month, i)
-#         if check_date not in dates_meds_taken:
-#             # Color day red (to indicate med not taken).
-#             html_events += """{{
-#                 overlap: false,
-#                 display: 'background',
-#                 color: '#ff9f89',
-#                 start: '{0}',
-#                 end: '{0}'
-#             }},""".format(check_date)
+def populate_calendar_past_days(patient_id):
+    html_events = ""
 
-#             html_events += """{{
-#                 title: 'Missed dose - Amlodipine',
-#                 start: '{}'
-#             }},""".format(check_date)
+    with closing(sqlite3.connect("../memory_pill.db")) as connection:
+        connection.row_factory = sqlite3.Row
+        with closing(connection.cursor()) as cursor:
+            for day in range(1, now.day):
+                # 2021-07-17 14:37:19.894992
+                med_date = "{0}-{1:02d}-{2:02d}".format(now.year, now.month, day)
+                cursor.execute("SELECT patient_id, medication_id, bottle_opened_at FROM medication_administrations WHERE patient_id = '{0}' AND bottle_opened_at LIKE '{1} %'".format(patient_id, med_date))
+                med_admins = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'bottle_opened_at'])
+                print(med_date)
+                print(med_admins)
 
+                for s in med_admins:
+                    cursor.execute("SELECT medication_name FROM medication_lookup WHERE medication_id = '{0}'".format(s['medication_id']))
+                    m = format_sqlite_results(cursor, ['medication_name'])
 
-def format_sqlite_results(cursor, columns):
-    l = []
-    while True:
-        d = {}
-        row = cursor.fetchone()
-        if row == None:
-            break
-        for column in columns:
-            d[column] = row[column]
-        l.append(d)
-    return l
+                    html_events += """
+                    {{
+                        title: '{0}',
+                        start: '{1}'
+                    }},""".format(m[0]['medication_name'], s['bottle_opened_at'])
 
-
-app = Flask(__name__)
-# Get page templates.
-html_top = open('calendar_top.html', 'r').read()
+    return html_events
 
 
 def generate_html_bottom(patient_name, patient_age, patient_gender, img, patients, patient_id):
@@ -76,7 +94,8 @@ def generate_html_bottom(patient_name, patient_age, patient_gender, img, patient
         patient_select += "<option value='{0}' {2}>{1}</option>".format(p['patient_id'], p['name'], sel)
 
 
-    result = """    calendar.render();
+    result = """
+        calendar.render();
         }});
 
         </script>
@@ -106,7 +125,7 @@ def generate_html_bottom(patient_name, patient_age, patient_gender, img, patient
             </form>
         </div>
         <div style="width:100%; text-align:center; font-size:22px; font-weight-bold; background-color: #e0e0eb;">
-            <img src="static/{3}" height="75" style="vertical-align: text-top;"> <span style="color: #cc0000;"><b>{0} {1} {2}</b></span> <br> <span style="color: #009933;">Medication Administration Record</span>
+            <img src="static/{3}" height="75" style="vertical-align: text-top;"> <span style="color: #cc0000;"><b>{0} {1} {2}</b></span> <br> <span style="color: #009933;">Medication Self-Administration Record</span>
         </div>
 
         <div id='calendar'></div>
@@ -117,33 +136,17 @@ def generate_html_bottom(patient_name, patient_age, patient_gender, img, patient
     return result
 
 
-# Set current date in calendar.
-startDate = "initialDate: '{}',".format(now.strftime("%Y-%m-%d"))
-
-# for item in items:
-#     j = str(item).replace("'", "\"")
-#     j = json.loads(j)
-#     time_split = j["Time"].split(" ") # Tue Oct 20 12:32:35 2020
-
-#     # Show time med taken.
-#     html_events += """{{
-#         title: 'Amlodipine',
-#         start: '{0}-{1}-{2}T{3}'
-#     }},""".format(time_split[4], month_to_number(time_split[1]), time_split[2], time_split[3])
-
-#     # Color day green (to indicate med taken).
-#     html_events += """{{
-#         overlap: false,
-#         display: 'background',
-#         color: '#89FF89',
-#         start: '{0}-{1}-{2}',
-#         end: '{0}-{1}-{2}'
-#     }},""".format(time_split[4], month_to_number(time_split[1]), time_split[2], time_split[3])
-
-#     date = "{0}-{1}-{2}".format(time_split[4], month_to_number(time_split[1]), time_split[2])
-#     dates_meds_taken[date] = True
-
-# med_not_taken_warnings(dates_meds_taken)
+def format_sqlite_results(cursor, columns):
+    l = []
+    while True:
+        d = {}
+        row = cursor.fetchone()
+        if row == None:
+            break
+        for column in columns:
+            d[column] = row[column]
+        l.append(d)
+    return l
 
 
 @app.route("/")
@@ -174,6 +177,9 @@ def home():
     else:
         html_events = ""
         html_bottom = generate_html_bottom('', '', '', '', patients, '')
+
+    html_events = "\nevents: [" + html_events + "]});"
+    html_top = open('calendar_top.html', 'r').read()
 
     return html_top + startDate + html_events + html_bottom
 
