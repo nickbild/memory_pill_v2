@@ -6,18 +6,158 @@ from contextlib import closing
 
 app = Flask(__name__)
 now = datetime.now()
-# Set current date in calendar.
-startDate = "initialDate: '{}',".format(now.strftime("%Y-%m-%d"))
 
 
 def populate_calendar(patient_id):
     html_events = ""
     html_events += populate_calendar_future_days(patient_id)
     html_events += populate_calendar_past_days(patient_id)
+    html_events += populate_calendar_today(patient_id)
 
     return html_events
 
 
+# Show actual medication administration times.
+# - If each admin doesn't correspond with a scheduled time +/- X hours, highlight cell in red.
+# - If more/less admins occur than scheduled, highlight cell in red.
+def populate_calendar_past_days(patient_id):
+    html_events = ""
+
+    with closing(sqlite3.connect("../memory_pill.db")) as connection:
+        connection.row_factory = sqlite3.Row
+        with closing(connection.cursor()) as cursor:
+            cursor.execute("SELECT patient_id, medication_id, time FROM medication_schedule WHERE patient_id = '{0}'".format(patient_id))
+            med_schedule = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'time'])
+
+            for day in range(1, now.day):
+                # Determine number of times each medication *should* be taken each day.
+                med_count = {}
+                for sched in med_schedule:
+                    if sched['medication_id'] not in med_count:
+                        med_count[sched['medication_id']] = 1
+                    else:
+                        med_count[sched['medication_id']] += 1
+
+                # Retrieve *actual* adminstrations.
+                med_date = "{0}-{1:02d}-{2:02d}".format(now.year, now.month, day)
+                cursor.execute("SELECT patient_id, medication_id, bottle_opened_at FROM medication_administrations WHERE patient_id = '{0}' AND bottle_opened_at LIKE '{1} %'".format(patient_id, med_date))
+                med_admins = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'bottle_opened_at'])
+
+                for ma in med_admins:
+                    cursor.execute("SELECT medication_name FROM medication_lookup WHERE medication_id = '{0}'".format(ma['medication_id']))
+                    m = format_sqlite_results(cursor, ['medication_name'])
+
+                    html_events += """
+                    {{
+                        title: '{0}',
+                        start: '{1}'
+                    }},""".format(m[0]['medication_name'], ma['bottle_opened_at'])
+
+                    # For each medication taken, did it happen at the correct time?
+                    for sched in med_schedule:
+                        if ma['medication_id'] == sched['medication_id']:
+                            bottle_open = ma['bottle_opened_at']
+                            scheduled = bottle_open.split(" ")[0] + " " + sched['time'] + ":00.000000"
+                            
+                            date_format = "%Y-%m-%d %H:%M:%S.%f"
+                            bottle_open_dt  = datetime.strptime(bottle_open, date_format)
+                            scheduled_dt  = datetime.strptime(scheduled, date_format)
+                            diff = abs(scheduled_dt - bottle_open_dt)
+                            
+                            # If difference in scheduled time and admin time is greater
+                            # than 7200 seconds (2 hours), flag the cell.
+                            if diff.seconds > 7200:
+                                html_events += """
+                                {{
+                                    overlap: false,
+                                    display: 'background',
+                                    color: 'red',
+                                    start: '{0}',
+                                    end: '{0}'
+                                }},""".format(bottle_open.split(" ")[0])
+
+                    # Track number of administration of each medication.
+                    if ma['medication_id'] in med_count:
+                        med_count[ma['medication_id']] =- 1
+
+                # Did the correct number of administrations occur?
+                alarm = False
+                for c in med_count:
+                    if med_count[c] != 0:
+                        alarm = True
+                
+                if alarm:
+                    html_events += """
+                    {{
+                        overlap: false,
+                        display: 'background',
+                        color: 'red',
+                        start: '{0}',
+                        end: '{0}'
+                    }},""".format(med_date)
+
+    return html_events
+
+
+# Show actual medication administration times.
+# If too many administrations have happened, highlight cell in red.
+def populate_calendar_today(patient_id):
+    html_events = ""
+
+    with closing(sqlite3.connect("../memory_pill.db")) as connection:
+        connection.row_factory = sqlite3.Row
+        with closing(connection.cursor()) as cursor:
+            cursor.execute("SELECT patient_id, medication_id, time FROM medication_schedule WHERE patient_id = '{0}'".format(patient_id))
+            med_schedule = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'time'])
+
+            day = now.day
+            # Determine number of times each medication *should* be taken each day.
+            med_count = {}
+            for sched in med_schedule:
+                if sched['medication_id'] not in med_count:
+                    med_count[sched['medication_id']] = 1
+                else:
+                    med_count[sched['medication_id']] += 1
+
+            # Retrieve *actual* adminstrations.
+            med_date = "{0}-{1:02d}-{2:02d}".format(now.year, now.month, day)
+            cursor.execute("SELECT patient_id, medication_id, bottle_opened_at FROM medication_administrations WHERE patient_id = '{0}' AND bottle_opened_at LIKE '{1} %'".format(patient_id, med_date))
+            med_admins = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'bottle_opened_at'])
+
+            for ma in med_admins:
+                cursor.execute("SELECT medication_name FROM medication_lookup WHERE medication_id = '{0}'".format(ma['medication_id']))
+                m = format_sqlite_results(cursor, ['medication_name'])
+
+                html_events += """
+                {{
+                    title: '{0}',
+                    start: '{1}'
+                }},""".format(m[0]['medication_name'], ma['bottle_opened_at'])
+
+                # Track number of administration of each medication.
+                if ma['medication_id'] in med_count:
+                    med_count[ma['medication_id']] =- 1
+
+            # Did an excessive number of administrations occur?
+            alarm = False
+            for c in med_count:
+                if med_count[c] < 0:
+                    alarm = True
+            
+            if alarm:
+                html_events += """
+                {{
+                    overlap: false,
+                    display: 'background',
+                    color: 'red',
+                    start: '{0}',
+                    end: '{0}'
+                }},""".format(med_date)
+
+    return html_events
+
+
+# Showed greyed-out medications, as scheduled to be taken.
 def populate_calendar_future_days(patient_id):
     html_events = ""
 
@@ -52,33 +192,6 @@ def populate_calendar_future_days(patient_id):
                         start: '{0}',
                         end: '{0}'
                     }},""".format(med_date_no_time)
-
-    return html_events
-
-
-def populate_calendar_past_days(patient_id):
-    html_events = ""
-
-    with closing(sqlite3.connect("../memory_pill.db")) as connection:
-        connection.row_factory = sqlite3.Row
-        with closing(connection.cursor()) as cursor:
-            for day in range(1, now.day):
-                # 2021-07-17 14:37:19.894992
-                med_date = "{0}-{1:02d}-{2:02d}".format(now.year, now.month, day)
-                cursor.execute("SELECT patient_id, medication_id, bottle_opened_at FROM medication_administrations WHERE patient_id = '{0}' AND bottle_opened_at LIKE '{1} %'".format(patient_id, med_date))
-                med_admins = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'bottle_opened_at'])
-                print(med_date)
-                print(med_admins)
-
-                for s in med_admins:
-                    cursor.execute("SELECT medication_name FROM medication_lookup WHERE medication_id = '{0}'".format(s['medication_id']))
-                    m = format_sqlite_results(cursor, ['medication_name'])
-
-                    html_events += """
-                    {{
-                        title: '{0}',
-                        start: '{1}'
-                    }},""".format(m[0]['medication_name'], s['bottle_opened_at'])
 
     return html_events
 
@@ -156,7 +269,7 @@ def home():
     if patient_id is not None and patient_id != "":
         patient_filter = "WHERE patient_id = '{0}'".format(patient_id)
 
-    # Connect to DB and cache data.
+    # Connect to DB and cache patient data.
     with closing(sqlite3.connect("../memory_pill.db")) as connection:
         connection.row_factory = sqlite3.Row
         with closing(connection.cursor()) as cursor:
@@ -168,9 +281,6 @@ def home():
             cursor.execute("SELECT patient_id, name, age, gender, img FROM patients {0}".format(patient_filter))
             patient = format_sqlite_results(cursor, ['patient_id', 'name', 'age', 'gender', 'img'])
 
-            cursor.execute("SELECT patient_id, medication_id, bottle_opened_at FROM medication_administrations {0}".format(patient_filter))
-            med_admins = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'bottle_opened_at'])
-
     if patient_id is not None and patient_id != "":
         html_events = populate_calendar(patient_id)
         html_bottom = generate_html_bottom(patient[0]['name'] + ",", patient[0]['age'], patient[0]['gender'], patient[0]['img'], patients, patient_id)
@@ -178,6 +288,7 @@ def home():
         html_events = ""
         html_bottom = generate_html_bottom('', '', '', '', patients, '')
 
+    startDate = "initialDate: '{}',".format(now.strftime("%Y-%m-%d"))
     html_events = "\nevents: [" + html_events + "]});"
     html_top = open('calendar_top.html', 'r').read()
 
