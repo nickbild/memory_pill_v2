@@ -30,6 +30,7 @@ def populate_calendar_past_days(patient_id):
             med_schedule = format_sqlite_results(cursor, ['patient_id', 'medication_id', 'time'])
 
             for day in range(1, now.day):
+                day_flagged = False # Prevent a day from being flagged >1 time.
                 # Determine number of times each medication *should* be taken each day.
                 med_count = {}
                 for sched in med_schedule:
@@ -67,34 +68,38 @@ def populate_calendar_past_days(patient_id):
                             # If difference in scheduled time and admin time is greater
                             # than 7200 seconds (2 hours), flag the cell.
                             if diff.seconds > 7200:
-                                html_events += """
-                                {{
-                                    overlap: false,
-                                    display: 'background',
-                                    color: 'red',
-                                    start: '{0}',
-                                    end: '{0}'
-                                }},""".format(bottle_open.split(" ")[0])
+                                if not day_flagged:
+                                    day_flagged = True
+                                    html_events += """
+                                    {{
+                                        overlap: false,
+                                        display: 'background',
+                                        color: 'red',
+                                        start: '{0}',
+                                        end: '{0}'
+                                    }},""".format(bottle_open.split(" ")[0])
 
-                    # Track number of administration of each medication.
+                    # Track number of administrations of each medication.
                     if ma['medication_id'] in med_count:
-                        med_count[ma['medication_id']] =- 1
+                        med_count[ma['medication_id']] = med_count[ma['medication_id']] - 1
 
                 # Did the correct number of administrations occur?
                 alarm = False
                 for c in med_count:
                     if med_count[c] != 0:
                         alarm = True
-                
+
                 if alarm:
-                    html_events += """
-                    {{
-                        overlap: false,
-                        display: 'background',
-                        color: 'red',
-                        start: '{0}',
-                        end: '{0}'
-                    }},""".format(med_date)
+                    if not day_flagged:
+                        day_flagged = True
+                        html_events += """
+                        {{
+                            overlap: false,
+                            display: 'background',
+                            color: 'red',
+                            start: '{0}',
+                            end: '{0}'
+                        }},""".format(med_date)
 
     return html_events
 
@@ -136,7 +141,7 @@ def populate_calendar_today(patient_id):
 
                 # Track number of administration of each medication.
                 if ma['medication_id'] in med_count:
-                    med_count[ma['medication_id']] =- 1
+                    med_count[ma['medication_id']] = med_count[ma['medication_id']] - 1
 
             # Did an excessive number of administrations occur?
             alarm = False
@@ -205,7 +210,6 @@ def generate_html_bottom(patient_name, patient_age, patient_gender, img, patient
         if patient_id == p['patient_id']:
             sel = "selected"
         patient_select += "<option value='{0}' {2}>{1}</option>".format(p['patient_id'], p['name'], sel)
-
 
     result = """
         calendar.render();
