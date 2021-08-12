@@ -51,9 +51,12 @@ void loop() {
      while(client.available()) {}
 
      client.stop();
+
+     delay(5000); // Prevent bouncing when lid opened.
   }
   // Lid is in place, so track that state.
   else if (digitalRead(LID) == LOW) {
+    delay(5000); // Prevent bouncing when lid replaced.
     state = "closed";
 
     // Sleep.
