@@ -1,6 +1,6 @@
 # Memory Pill
 
-Memory Pill passively records the last time a medication bottle was opened to prevent over- and underdosing of medications.  A companion web application receives this data, and compares it with the individual's presecribed medication schedule.  Any errors in self-administration will be flagged for review.
+Memory Pill passively records the last time a medication bottle was opened to prevent over- and underdosing of medications.  A companion web application receives this data, and compares it with the individual's prescribed medication schedule.  Any errors in self-administration will be flagged for review.
 
 Using Memory Pill, it is possible to centrally monitor a large number of individuals, for example in an assisted living facitilty, to identify problems with medication administrations.  It is also possible to use on a small scale, such as in monitoring an elderly, yet still independent, relative across town, or across the world.
 
