@@ -32,7 +32,7 @@ For past and present days, actual medication administration times will be shown,
 
 ## Future Direction
 
-Purpose-designed hardware would allow the device to be miniaturized further such that the electronics could all be concealed within the cap.  Reducing the size would allow for the addition of an inductive charging unit within the cap, which would allow pharmacists to simply set the caps on pads to recharge them before giving them to the next patient.  Also towards the goal of making Memory Pill more practical, the medication ID and patient ID will need to be reprogrammable by the pharmacist—as the ESP32 is WiFi-enabled, there are many possible ways to accomplish this.
+Purpose-designed hardware would allow the device to be miniaturized further such that the electronics could all be concealed within the cap.  Reducing the size would allow for the addition of an inductive charging unit within the cap, which would allow pharmacists to simply set the caps on pads to recharge them before giving them to the next patient.  Also towards the goal of making Memory Pill more practical, the medication ID and patient ID stored in the cap will need to be reprogrammable by the pharmacist—as the ESP32 is WiFi-enabled, there are many possible ways to accomplish this.
 
 ## Bill of Materials
 
