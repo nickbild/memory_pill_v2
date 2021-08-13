@@ -4,6 +4,8 @@ Memory Pill passively records the last time a medication bottle was opened to pr
 
 Using Memory Pill, it is possible to centrally monitor a large number of individuals, for example in an assisted living facitilty, to identify problems with medication administrations.  It is also possible to use on a small scale, such as in monitoring an elderly, yet still independent, relative across town, or across the world.
 
+![cap and bottle](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/cap_and_bottle_sm.jpg)
+
 This is an upgraded version of [Memory Pill](https://github.com/nickbild/memory_pill).
 
 # How It Works
@@ -26,4 +28,4 @@ The SQLite3 database also contains information about patients and their prescrib
 
 ![web app](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/web_app_sm.jpg)
 
-For past data, any exceptions to the expected medication schedule (missed doses, extra doses) will cause the day to be highlighted in red so that problems can be seen with a quick glance.  For dates in the future, the days will be grayed-out and display only the expected schedules of medications to be taken.
+For past data, any exceptions to the expected medication schedule (missed doses, extra doses) will cause the day to be highlighted in red so that problems can be seen with a quick glance.  For dates in the future, the days will be greyed-out and display only the expected schedules of medications to be taken.
