@@ -30,6 +30,8 @@ The SQLite3 database also contains information about patients and their prescrib
 
 For past and present days, actual medication administration times will be shown, and any exceptions to the expected schedule (missed doses, extra doses, off-schedule doses) will cause the day to be highlighted in red so that problems can be seen with a quick glance.  For dates in the future, the days will be greyed-out and display only the expected schedules of medications to be taken.
 
+A video of Memory Pill in action is [available here](https://github.com/nickbild/memory_pill_v2/blob/main/media/memory_pill.mp4?raw=true).
+
 ## Future Direction
 
 Purpose-designed hardware would allow the device to be miniaturized further such that the electronics could all be concealed within the cap.  Reducing the size would allow for the addition of an inductive charging unit within the cap, which would allow pharmacists to simply set the caps on pads to recharge them before giving them to the next patient.  Also towards the goal of making Memory Pill more practical, the medication ID and patient ID stored in the cap will need to be reprogrammable by the pharmacist—as the ESP32 is WiFi-enabled, there are many possible ways to accomplish this.
