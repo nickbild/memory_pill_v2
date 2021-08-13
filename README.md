@@ -26,3 +26,4 @@ The SQLite3 database also contains information about patients and their prescrib
 
 ![web app](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/web_app_sm.jpg)
 
+For past data, any exceptions to the expected medication schedule (missed doses, extra doses) will cause the day to be highlighted in red so that problems can be seen with a quick glance.  For dates in the future, the days will be grayed-out and display only the expected schedules of medications to be taken.
