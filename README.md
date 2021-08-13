@@ -1,4 +1,4 @@
-# Memory Pill v2
+# Memory Pill
 
 Memory Pill passively records the last time a medication bottle was opened to prevent over- and underdosing of medications.  A companion web application receives this data, and compares it with the individual's presecribed medication schedule.  Any errors in self-administration will be flagged for review.
 
