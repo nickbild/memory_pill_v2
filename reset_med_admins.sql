@@ -1,5 +1,4 @@
--- SQLite3 schema for Memory Pill v2.
--- https://github.com/nickbild/memory_pill_v2
+DROP TABLE medication_administrations;
 
 CREATE TABLE medication_administrations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,35 +47,3 @@ INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_o
 INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('332808b0749fbbd33c631d080d52549d', '90a450310cd0b6074c3a1885cf8e421c', '2021-08-19 17:16:00.000000');
 INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('332808b0749fbbd33c631d080d52549d', '5d91f2938cf68888e290deb643b77251', '2021-08-20 08:54:00.000000');
 INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('332808b0749fbbd33c631d080d52549d', '90a450310cd0b6074c3a1885cf8e421c', '2021-08-20 17:33:00.000000');
-
-CREATE TABLE medication_schedule (
-    patient_id TEXT,
-    medication_id TEXT,
-    `time` TEXT
-);
-
-INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '5d91f2938cf68888e290deb643b77251', '08:00');
-INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '90a450310cd0b6074c3a1885cf8e421c', '17:00');
-INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '08:30');
-INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '18:30');
-
-CREATE TABLE medication_lookup (
-    medication_id TEXT,
-    medication_name TEXT
-);
-
-INSERT INTO medication_lookup VALUES ('5d91f2938cf68888e290deb643b77251', 'Amlodipine');
-INSERT INTO medication_lookup VALUES ('90a450310cd0b6074c3a1885cf8e421c', 'Pantoprazole');
-INSERT INTO medication_lookup VALUES ('5bc2199d9a9125748c41105f893a3a7e', 'Amoxicillin');
-
-CREATE TABLE patients (
-    patient_id TEXT,
-    `name` TEXT,
-    age TEXT,
-    gender TEXT
-);
-
-ALTER TABLE patients ADD img TEXT;
-
-INSERT INTO patients VALUES ('332808b0749fbbd33c631d080d52549d', 'Jane Doe', '72', 'F');
-INSERT INTO patients VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', 'Greg Johnson', '55', 'M');
