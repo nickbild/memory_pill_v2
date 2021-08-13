@@ -22,13 +22,17 @@ A small hole was drilled in the bottle cap to allow two wires from the HUZZAH's 
 
 ![cap bottom](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/cap_bottom_sm.jpg)
 
-When the lid is on, the ESP32 is put into an ultra-low power deep sleep mode to conserve battery, such that it can last between medication refills without needing to be charged.  On opening the bottle, the ESP32 is awoken, starts up its WiFi radio, and sends an HTTP POST request to [a custom API](https://github.com/nickbild/memory_pill_v2/blob/main/memory_pill_api.py) that contains unique identifiers representing the type of medication, and the patient that it has been prescribed to.  These bottle open events are stored in an SQLite3 database.
+The code running on the HUZZAH32 [is available here](https://github.com/nickbild/memory_pill_v2/tree/main/memory_pill_arduino).  When the lid is on, the ESP32 is put into an ultra-low power deep sleep mode to conserve battery, such that it can last between medication refills without needing to be charged.  On opening the bottle, the ESP32 is awoken, starts up its WiFi radio, and sends an HTTP POST request to [a custom API](https://github.com/nickbild/memory_pill_v2/blob/main/memory_pill_api.py) that contains unique identifiers representing the type of medication, and the patient that it has been prescribed to.  These bottle open events are stored in an SQLite3 database.
 
 The SQLite3 database also contains information about patients and their prescribed medication schedules.  This data is used to drive [a web application](https://github.com/nickbild/memory_pill_v2/tree/main/web_calendar).  The application present a user with a calendar, and the ability to select a patient.
 
 ![web app](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/web_app_sm.jpg)
 
 For past data, any exceptions to the expected medication schedule (missed doses, extra doses) will cause the day to be highlighted in red so that problems can be seen with a quick glance.  For dates in the future, the days will be greyed-out and display only the expected schedules of medications to be taken.
+
+## Future Direction
+
+Purpose-designed hardware would allow the device to be miniaturized further such that the electronics could all be concealed within the cap.  Reducing the size would allow for the addition of an inductive charging unit within the cap, which would allow pharmacists to simply set the caps on pads to recharge them before giving them to the next patient.  Also towards the goal of making Memory Pill more practical, the medication ID and patient ID will need to be reprogrammable by the pharmacist—as the ESP32 is WiFi-enabled, there are many possible ways to accomplish this.
 
 ## Bill of Materials
 
