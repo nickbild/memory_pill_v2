@@ -8,7 +8,7 @@ Using Memory Pill, it is possible to centrally monitor a large number of individ
 
 This is an upgraded version of [Memory Pill](https://github.com/nickbild/memory_pill).
 
-# How It Works
+## How It Works
 
 The rim of a medication bottle has been lined with a conductive ring.  For the prototype, conductive nylon was chosen.  No other instrumentation is present in the bottle.
 
@@ -29,3 +29,18 @@ The SQLite3 database also contains information about patients and their prescrib
 ![web app](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/web_app_sm.jpg)
 
 For past data, any exceptions to the expected medication schedule (missed doses, extra doses) will cause the day to be highlighted in red so that problems can be seen with a quick glance.  For dates in the future, the days will be greyed-out and display only the expected schedules of medications to be taken.
+
+## Bill of Materials
+
+- Adafruit HUZZAH32
+- 400 mAh LiPo battery
+- Conductive nylon
+- Copper tape
+- Switch (optional)
+- 10K ohm resistor
+- 100K ohm resistor
+- Miscellaneous wires
+
+## About the Author
+
+[Nick A. Bild, MS](https://nickbild79.firebaseapp.com/#!/)
