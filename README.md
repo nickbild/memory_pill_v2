@@ -19,3 +19,10 @@ The top of the bottle cap has an Adafruit HUZZAH32 ESP32 development board affix
 A small hole was drilled in the bottle cap to allow two wires from the HUZZAH's GPIO pins to reach the bottom of the cap.  These wires are soldered to two large copper pads made from copper tape.  These pads are not in contact with one another.  When the lids is put on the bottle, an electrical circuit is completed between the pads by the conductive ring on the bottle.
 
 ![cap bottom](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/cap_bottom_sm.jpg)
+
+When the lid is on, the ESP32 is put into an ultra-low power deep sleep mode to conserve battery, such that it can last between medication refills without needing to be charged.  On opening the bottle, the ESP32 is awoken, starts up its WiFi radio, and sends an HTTP POST request to [a custom API](https://github.com/nickbild/memory_pill_v2/blob/main/memory_pill_api.py) that contains unique identifiers representing the type of medication, and the patient that it has been prescribed to.  These bottle open events are stored in an SQLite3 database.
+
+The SQLite3 database also contains information about patients and their prescribed medication schedules.  This data is used to drive [a web application](https://github.com/nickbild/memory_pill_v2/tree/main/web_calendar).  The application present a user with a calendar, and the ability to select a patient.
+
+![web app](https://raw.githubusercontent.com/nickbild/memory_pill_v2/main/media/web_app_sm.jpg)
+
