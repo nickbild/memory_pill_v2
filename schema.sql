@@ -49,6 +49,27 @@ INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_o
 INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('332808b0749fbbd33c631d080d52549d', '5d91f2938cf68888e290deb643b77251', '2021-08-20 08:54:00.000000');
 INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('332808b0749fbbd33c631d080d52549d', '90a450310cd0b6074c3a1885cf8e421c', '2021-08-20 17:33:00.000000');
 
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-01 08:04:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-02 08:09:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-02 08:11:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-03 08:13:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-04 17:17:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-05 08:12:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-06 08:12:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-07 08:15:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-08 08:15:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-09 08:19:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-11 08:06:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-12 08:03:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-13 08:01:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-14 08:05:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-15 08:05:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-16 08:02:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-17 08:01:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-18 08:02:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-19 08:25:00.000000');
+INSERT INTO medication_administrations ('patient_id', 'medication_id', 'bottle_opened_at') VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '2021-08-20 08:54:00.000000');
+
 CREATE TABLE medication_schedule (
     patient_id TEXT,
     medication_id TEXT,
@@ -58,7 +79,6 @@ CREATE TABLE medication_schedule (
 INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '5d91f2938cf68888e290deb643b77251', '08:00');
 INSERT INTO medication_schedule VALUES ('332808b0749fbbd33c631d080d52549d', '90a450310cd0b6074c3a1885cf8e421c', '17:00');
 INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '08:30');
-INSERT INTO medication_schedule VALUES ('7ddf32e17a6ac5ce04a8ecbf782ca509', '5bc2199d9a9125748c41105f893a3a7e', '18:30');
 
 CREATE TABLE medication_lookup (
     medication_id TEXT,
